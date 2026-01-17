@@ -1,26 +1,46 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+:root { color-scheme: light; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #111;
 }
+a { color: inherit; }
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
+}
+.row { display: flex; gap: 12px; align-items: center; }
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.button {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: #111;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.button:disabled { opacity: 0.5; cursor: not-allowed; }
+.small { font-size: 14px; color: #555; }
+.hr { height: 1px; background: #eee; margin: 16px 0; border: 0; }
+.entry { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+.entry:last-child { border-bottom: 0; }
+.entryTitle { font-size: 16px; margin: 4px 0 0; }
+.entryMeta { font-size: 13px; color: #666; }
+img.photo { width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #eee; }
+.notice { padding: 12px 14px; border-radius: 12px; background: #fafafa; border: 1px solid #eee; }
