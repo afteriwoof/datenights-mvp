@@ -11,9 +11,11 @@ export default function LandingPage() {
   const [busy, setBusy] = useState(false);
 
   const redirectTo = useMemo(() => {
-    // Magic-link returns here; we’ll create the couple after session is established.
-    return typeof window === "undefined" ? "" : window.location.origin;
+  return typeof window === "undefined"
+    ? ""
+    : `${window.location.origin}/auth/callback?next=/`;
   }, []);
+
 
   useEffect(() => {
     let mounted = true;

@@ -40,7 +40,9 @@ export default function TimelinePage() {
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
 
   const redirectTo = useMemo(() => {
-    return typeof window === "undefined" ? "" : `${window.location.origin}/t/${coupleId}`;
+    return typeof window === "undefined"
+      ? ""
+      : `${window.location.origin}/auth/callback?next=/t/${coupleId}`;
   }, [coupleId]);
 
   useEffect(() => {
