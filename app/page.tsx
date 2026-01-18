@@ -70,7 +70,7 @@ async function createCoupleAndGo() {
 
     const user = sessionData.session?.user;
 
-    // IMPORTANT: never early-return while busy=true
+    // Never early-return while busy=true
     if (!user) {
       setBusy(false);
       return;
@@ -92,14 +92,14 @@ async function createCoupleAndGo() {
 
     if (memErr) throw memErr;
 
-    // 3) Go to timeline (we don't need to setBusy(false) because we leave the page)
-inc
+    // 3) Go to timeline
     router.push(`/t/${couple.id}`);
   } catch (e: any) {
     setStatus(e?.message ?? "Failed to create timeline.");
     setBusy(false);
   }
 }
+
 
   return (
     <main className="container">
