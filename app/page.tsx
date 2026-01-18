@@ -16,7 +16,7 @@ export default function LandingPage() {
     : `${window.location.origin}/auth/callback?next=/`;
   }, []);
 
-
+/*
   useEffect(() => {
     let mounted = true;
 
@@ -42,7 +42,7 @@ export default function LandingPage() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+*/
   async function sendMagicLink() {
     setBusy(true);
     setStatus(null);
@@ -59,7 +59,7 @@ export default function LandingPage() {
       setBusy(false);
     }
   }
-
+/*
 async function createCoupleAndGo() {
   setBusy(true);
   setStatus(null);
@@ -99,7 +99,7 @@ async function createCoupleAndGo() {
     setBusy(false);
   }
 }
-
+*/
 
   return (
     <main className="container">
