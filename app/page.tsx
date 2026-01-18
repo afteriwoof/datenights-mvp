@@ -60,40 +60,46 @@ export default function LandingPage() {
     }
   }
 
-  async function createCoupleAndGo() {
-    // Prevent double-creation if auth fires multiple times.
-    if (busy) return;
-    setBusy(true);
-    setStatus(null);
+async function createCoupleAndGo() {
+  setBusy(true);
+  setStatus(null);
 
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData.session?.user;
-      if (!user) return;
+  try {
+    const { data: sessionData, error: sessErr } = await supabase.auth.getSession();
+    if (sessErr) throw sessErr;
 
-      // 1) Create couple
-      const { data: couple, error: coupleErr } = await supabase
-        .from("couples")
-        .insert({})
-        .select("id")
-        .single();
+    const user = sessionData.session?.user;
 
-      if (coupleErr) throw coupleErr;
-
-      // 2) Join as member
-      const { error: memErr } = await supabase
-        .from("couple_members")
-        .insert({ couple_id: couple.id, user_id: user.id });
-
-      if (memErr) throw memErr;
-
-      // 3) Go to timeline
-      router.push(`/t/${couple.id}`);
-    } catch (e: any) {
-      setStatus(e?.message ?? "Failed to create timeline.");
+    // IMPORTANT: never early-return while busy=true
+    if (!user) {
       setBusy(false);
+      return;
     }
+
+    // 1) Create couple
+    const { data: couple, error: coupleErr } = await supabase
+      .from("couples")
+      .insert({})
+      .select("id")
+      .single();
+
+    if (coupleErr) throw coupleErr;
+
+    // 2) Join as member
+    const { error: memErr } = await supabase
+      .from("couple_members")
+      .insert({ couple_id: couple.id, user_id: user.id });
+
+    if (memErr) throw memErr;
+
+    // 3) Go to timeline (we don't need to setBusy(false) because we leave the page)
+inc
+    router.push(`/t/${couple.id}`);
+  } catch (e: any) {
+    setStatus(e?.message ?? "Failed to create timeline.");
+    setBusy(false);
   }
+}
 
   return (
     <main className="container">
