@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -8,8 +8,11 @@ export default function AuthCallbackClient() {
   const router = useRouter();
   const params = useSearchParams();
   const [msg, setMsg] = useState("Signing you in…");
+  const ran = useRef(false);
 
   useEffect(() => {
+    if (ran.current) return;  
+    ran.current = true;
     (async () => {
       try {
         // 1) Let supabase-js parse session from the URL / storage
@@ -37,6 +40,7 @@ export default function AuthCallbackClient() {
           setMsg("Signed in, but no session found. Open the link in the same browser you used to request it.");
           return;
         }
+        await new Promise((r) => setTimeout(r, 150)); // Allow auth session to fully propagate before DB calls.
 
         // 3) Decide what to do next:
         // If this callback was for joining a timeline, just go there.
@@ -51,19 +55,20 @@ export default function AuthCallbackClient() {
         // 4) Otherwise: this was "Start your timeline" flow. Create couple + membership here.
         setMsg("Creating your timeline…");
 
-        const { data: couple, error: coupleErr } = await supabase
-          .from("couples")
-          .insert({})
-          .select("id")
-          .single();
-        if (coupleErr) throw coupleErr;
+        const { data, error: rpcErr } = await supabase.rpc("create_couple_and_join");
+        if (rpcErr) throw rpcErr;
 
-        const { error: memErr } = await supabase
-          .from("couple_members")
-          .insert({ couple_id: couple.id, user_id: sessionUserId });
-        if (memErr) throw memErr;
+        const coupleId =
+          typeof data === "string"
+            ? data
+            : (data as any)?.id ?? (Array.isArray(data) ? (data[0] as any)?.id : null);
 
-        router.replace(`/t/${couple.id}`);
+        if (!coupleId) {
+          throw new Error("Failed to create timeline (no couple id returned).");
+        }
+
+        router.replace(`/t/${coupleId}`);
+
       } catch (e: any) {
         setMsg(e?.message ?? "Sign-in failed.");
       }
