@@ -48,7 +48,7 @@ export default function AuthCallbackClient() {
 
         // If next is a timeline URL, don’t create a new couple.
         if (next.startsWith("/t/")) {
-          router.replace(next);
+          window.location.replace(next);
           return;
         }
 
@@ -67,7 +67,7 @@ export default function AuthCallbackClient() {
           throw new Error("Failed to create timeline (no couple id returned).");
         }
 
-        router.replace(`/t/${coupleId}`);
+        window.location.replace(`/t/${coupleId}`);
 
       } catch (e: any) {
         setMsg(e?.message ?? "Sign-in failed.");
